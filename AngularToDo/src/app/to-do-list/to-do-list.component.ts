@@ -10,7 +10,7 @@ import { ITodo, TodoStatus } from '../models/models';
 export class ToDoListComponent implements OnInit {
 
   constructor(private toDoService: ToDoService) { }
-  
+
   public todos: ITodo[] = [];
   public todoStatus = TodoStatus;
 
@@ -19,7 +19,12 @@ export class ToDoListComponent implements OnInit {
   }
 
   private initTodos() {
-    this.todos = this.toDoService.getTodos();
+    this.todos = this.toDoService.getTodos().map(todo => {
+      if (this.isOutdated(todo.deadline)) {
+        todo.status = TodoStatus.outdated;
+      }
+      return todo;
+    });
   }
 
   public onDelete(id?: number) {
@@ -30,8 +35,15 @@ export class ToDoListComponent implements OnInit {
   }
 
   public statusChange(todo: ITodo) {
-    todo.status = todo.status === TodoStatus.pending ? TodoStatus.completed : TodoStatus.pending;
-    this.toDoService.updateTodo(todo);
-    this.initTodos();
+    if (todo.status !== TodoStatus.outdated) {
+      todo.status = todo.status === TodoStatus.pending ? TodoStatus.completed : TodoStatus.pending;
+      this.toDoService.updateTodo(todo);
+      this.initTodos();
+    }
+  }
+
+  private isOutdated(deadline: string): boolean {
+    const today = new Date().toISOString().split('T')[0];
+    return deadline < today;
   }
 }

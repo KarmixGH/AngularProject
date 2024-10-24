@@ -6,7 +6,6 @@
 
 <div>
   <table>
-
     <thead>
       <tr>
         <th>#</th>
@@ -20,23 +19,44 @@
     </thead>
 
     <tbody>
-      <ng-container *ngIf="todos.length > 0;">
-        <tr *ngFor="let todo of todos; let i = index" [ngStyle]="{background: todo.status === todoStatus.pending ? '#E2F1E7' : '#629584'}">
-
+      <ng-container *ngIf="todos.length > 0">
+        <tr
+          *ngFor="let todo of todos; let i = index"
+          [ngStyle]="{
+            background:
+              todo.status === todoStatus.pending
+                ? '#E2F1E7'
+                : todo.status === todoStatus.completed
+                ? '#629584'
+                : 'rgba(255, 0, 0, 0.4)'
+          }"
+        >
           <td>{{ i + 1 }}</td>
           <td>{{ todo.title }}</td>
           <td>{{ todo.createDate | customDate }}</td>
           <td>{{ todo.deadline | customDate }}</td>
-          <td>{{ todo.assignee}}</td>
+          <td>{{ todo.assignee }}</td>
           <td>{{ todoStatus[todo.status] }}</td>
 
           <td>
-            <button style="background-color: rgb(0, 89, 255)" (click)="statusChange(todo)"> Change Status </button>
-            <button style="background-color: orange" [routerLink]="['/edit/', todo.id]"> Update </button>
-            <button style="background-color: red" (click)="onDelete(todo.id)"> Delete </button>
+            <button
+              style="background-color: rgb(0, 89, 255)"
+              (click)="statusChange(todo)"
+              [disabled]="todo.status === todoStatus.outdated"
+            >
+              Change Status
+            </button>
+            <button
+              style="background-color: orange"
+              [routerLink]="['/edit/', todo.id]"
+            >
+              Update
+            </button>
+            <button style="background-color: red" (click)="onDelete(todo.id)">
+              Delete
+            </button>
           </td>
         </tr>
-
       </ng-container>
     </tbody>
   </table>
