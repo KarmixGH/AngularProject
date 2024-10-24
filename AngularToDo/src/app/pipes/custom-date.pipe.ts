@@ -8,7 +8,7 @@ export class CustomDatePipe implements PipeTransform {
   transform(value: string | Date, formatType?: string): string {
     const date = this.parseDate(value);
     if (!date) {
-      return 'Invalid date'; // Error handling for invalid date
+      return 'Invalid date'; 
     }
 
     switch (formatType) {
@@ -23,7 +23,7 @@ export class CustomDatePipe implements PipeTransform {
 
   private parseDate(value: string | Date): Date | null {
     const date = new Date(value);
-    return isNaN(date.getTime()) ? null : date; // Validate date
+    return isNaN(date.getTime()) ? null : date; 
   }
 
   private formatDefaultDate(date: Date): string {
